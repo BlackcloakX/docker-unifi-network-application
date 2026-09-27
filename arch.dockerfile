@@ -44,9 +44,11 @@
   RUN set -ex; \
     mkdir -p ${APP_ROOT}/var/sites/default; \
     rm -rf /var/lib/unifi; ln -sf ${APP_ROOT}/var /var/lib/unifi; \
+    rm -rf /usr/lib/unifi/data; ln -sf ${APP_ROOT}/var /usr/lib/unifi/data; \
     rm -rf /var/log/unifi; ln -sf ${APP_ROOT}/log /var/log/unifi; \
     rm -rf /usr/lib/unifi/logs; ln -sf ${APP_ROOT}/log /usr/lib/unifi/logs; \
-    rm -rf /var/run/unifi; ln -sf ${APP_ROOT}/run /var/run/unifi;
+    rm -rf /var/run/unifi; ln -sf ${APP_ROOT}/run /var/run/unifi; \
+    rm -rf /usr/lib/unifi/run; ln -sf ${APP_ROOT}/run /usr/lib/unifi/run;
 
   RUN set -ex; \
     mkdir -p /usr/lib/unifi/data; \
@@ -65,6 +67,7 @@
     mkdir -p /distroless${APP_ROOT}/var; \
     mkdir -p /distroless${APP_ROOT}/log; \
     mkdir -p /distroless${APP_ROOT}/run; \
+    chown -R ${APP_UID}:${APP_GID} /distroless${APP_ROOT}; \
     chmod +x -R /distroless/usr/local/bin;
 
 
