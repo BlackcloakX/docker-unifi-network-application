@@ -32,7 +32,9 @@
   FROM 11notes/debian:13 AS build
   COPY --from=util / /
   COPY --from=source /distroless/ /
-  ARG APP_ROOT
+  ARG APP_ROOT \
+      APP_UID \
+      APP_GID
   USER root
 
   RUN set -ex; \
@@ -55,13 +57,20 @@
     keytool -genkey -keyalg RSA -alias unifi -keystore /usr/lib/unifi/data/keystore -storepass aircontrolenterprise -keypass aircontrolenterprise -validity 3650 -keysize 4096 -dname "cn=unifi" -ext san=dns:unifi;
 
   RUN set -ex; \
+  chown -R ${APP_UID}:${APP_GID} \
+    /usr/lib/unifi/data/keystore \
+    ${APP_ROOT};
+  
+  RUN set -ex; \
     eleven cleanup;
 
 
 # :: FILE SYSTEM
   FROM alpine AS file-system
   COPY ./rootfs/ /distroless
-  ARG APP_ROOT
+  ARG APP_ROOT \
+      APP_UID \
+      APP_GID
 
   RUN set -ex; \
     mkdir -p /distroless${APP_ROOT}/var; \
